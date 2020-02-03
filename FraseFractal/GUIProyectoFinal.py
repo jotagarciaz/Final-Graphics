@@ -247,7 +247,7 @@ class GUIProyectoFinal(ttk.Frame):
             if y > ymax:
                 ymax = y
 
-        im = Image.new('HSV', (WIDTH, HEIGTH), (0, 0, 0))
+        im = Image.new('RGBA', (WIDTH, HEIGTH), (0, 0, 0))
         draw = ImageDraw.Draw(im)
 
         for i in range (100000):
@@ -265,13 +265,12 @@ class GUIProyectoFinal(ttk.Frame):
             nx = int((x - xmin) / (xmax - xmin) * (WIDTH - 1))
             ny = (HEIGTH - 1) - int((y - ymin) / (ymax - ymin) * (HEIGTH - 1))
             if nx < (WIDTH-1) and ny < (HEIGTH-1) and WIDTH >0 and HEIGTH >0:
-                #print(nx, ny)
+                
                 im.putpixel((int(nx), int(ny)), 255)
-                #print(index," ",self.n_colores, " ",index % self.n_colores," ",color * (index+1))
-                print(self.colors[l % self.n_colores])
-                #self.colors[index % self.n_colores]
-                draw.point([int(nx), int(ny)], self.colors[i % self.n_colores])
-                #draw.point([int(nx), int(ny)], (color * (index+1), 255, 255))
+
+                print(self.colors[index % self.n_colores])
+                draw.point([int(nx), int(ny)], self.colors[index % self.n_colores])
+              
 
         self.imagen = ImageTk.PhotoImage(im)
         self.c.create_image(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, image=self.imagen)
