@@ -5,7 +5,6 @@ import random
 
 from tkcolorpicker import askcolor
 
-from Convert import convertTo
 
 CANVAS_HEIGHT = 700
 CANVAS_WIDTH = 1000
@@ -35,7 +34,7 @@ class GUIProyectoFinal(ttk.Frame):
         self.entryPalabra.grid(column=2, row=0, padx=5, pady=5)
 
         self.dibujar = Button(self.labelFrame, text="Dibujar", width=8, height=1, command=self.pinta)
-        self.dibujar.grid(column=3, row=0, padx=5, pady=5)
+        self.dibujar.grid(column=5, row=0, padx=5, pady=5)
 
         self.longLetra = 15
 
@@ -43,23 +42,56 @@ class GUIProyectoFinal(ttk.Frame):
         #self.labelF.grid(column=4, row=0, sticky="w")
 
         self.txtNColor =  tk.Label(self.labelFrame,text="número de colores: ")
-        self.txtNColor.grid(column=5, row=0,padx=5,pady=5)
+        self.txtNColor.grid(column=3, row=0,padx=5,pady=5)
 
         
         self.NColores = tk.IntVar()
+        self.NColores.set(1)
         self.entryNColores = tk.Entry(self.labelFrame, width=10, justify=tk.RIGHT, textvariable=self.NColores)
-        self.entryNColores.grid(column=6, row=0, padx=5, pady=5)
+        self.entryNColores.grid(column=4, row=0, padx=5, pady=5)
 
-        self.color = Button(self.labelFrame, text="Aceptar", width=8, height=1, command=self.color_pick)
-        self.color.grid(column=7, row=0, padx=5, pady=5)
-        
 
-    def color_pick(self):
-        
 
-        for i in range(self.NColores.get()):
-            self.colors.append(askcolor((255, 255, 0), self.c)[0])
-        
+        self.matrizEliminar = [
+            [6, 7, 8, 9, 10, 11, 12, 13, 14],  # A
+            [7, 8, 9, 10, 11, 12, 13, 14],  # B
+            [3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14],  # C
+            [5, 7, 8, 9, 10, 11, 12, 13, 14],  # D
+            [3, 4, 7, 8, 9, 10, 11, 12, 13, 14],  # E
+            [3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14],  # F
+            [3, 7, 8, 9, 10, 11, 12, 13, 14],  # G
+            [2, 6, 7, 8, 9, 10, 11, 12, 13, 14],  # H
+            [0, 1, 3, 4, 5, 9, 10, 11, 12, 13, 14],  # I
+            [0, 1, 2, 5, 7, 8, 9, 10, 11, 12, 13, 14],  # J
+            [2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14],  # K
+            [2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14],  # L
+            [5, 6, 8, 9, 10, 11, 12, 13, 14],  # M
+            [5, 6, 7, 8, 9, 10, 11, 12, 13, 14],  # N
+            [5, 7, 8, 9, 10, 11, 12, 13, 14],  # O
+            [4, 6, 7, 8, 9, 10, 11, 12, 13, 14],  # P
+            [5, 7, 8, 10, 11, 12, 13, 14],  # Q
+            [4, 6, 7, 8, 10, 11, 12, 13, 14],  # R
+            [1, 3, 7, 8, 9, 10, 11, 12, 13, 14],  # S
+            [0, 1, 3, 4, 5, 6, 9, 10, 11, 12, 13, 14],  # T
+            [2, 5, 7, 8, 9, 10, 11, 12, 13, 14],  # U
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],  # V
+            [2, 5, 7, 9, 10, 11, 12, 13, 14],  # W
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14],  # X
+            [1, 2, 4, 6, 7, 9, 10, 11, 12, 13, 14],  # Y
+            [0, 1, 3, 4, 5, 7, 8, 9, 10, 12, 13, 14],  # Z
+        ]
+
+
+
+    def convertTo(self, mat, pos, letra):
+        ascii = ord(letra)
+        if ascii > 64:
+            index = ascii - 65
+            f = self.matrizEliminar[index]
+            fila = f[:]
+            fila.reverse()
+            for f in fila:
+                mat.__delitem__(f + pos)
 
     def ajustarMatriz(self, texto):
         self.n_colores = len(texto) if self.NColores.get() > len(texto) or self.NColores.get()<=0 else self.NColores.get()
@@ -72,17 +104,17 @@ class GUIProyectoFinal(ttk.Frame):
             self.fractal6()
         elif l == 7:
             self.fractal7()
-        """elif l == 8:
-            self.fractal8()"""
 
         index = self.longLetra * (l-1)
         texto.reverse()
         for t in texto:
-            convertTo(self.lineas, index, t)
+            self.convertTo(self.lineas, index, t)
             index -= self.longLetra
 
 
     def pinta(self):
+        for i in range(self.NColores.get()):
+            self.colors.append(askcolor((255, 255, 0), self.c)[0])
         texto = list(self.palabra.get().upper())
         self.ajustarMatriz(texto)
         self.pintaIFS()
@@ -268,13 +300,14 @@ class GUIProyectoFinal(ttk.Frame):
                 
                 im.putpixel((int(nx), int(ny)), 255)
 
-                print(self.colors[index % self.n_colores])
                 draw.point([int(nx), int(ny)], self.colors[index % self.n_colores])
               
 
         self.imagen = ImageTk.PhotoImage(im)
         self.c.create_image(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, image=self.imagen)
         self.c.update()
+
+
         
 
 main_window = tk.Tk()
